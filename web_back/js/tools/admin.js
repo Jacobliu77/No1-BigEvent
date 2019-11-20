@@ -14,9 +14,27 @@ var admin = {
         })
     },
     getuser: function (callback) {
-        $.get(baseUrl +'/admin/getuser', function (res) {
-           callback(res)
+        $.get(baseUrl + '/admin/getuser', function (res) {
+            callback(res)
         })
     }
 
+}
+
+var article = {
+        count: function (callback) {
+           $.get(baseUrl+'/admin/article_count',function(res){
+                callback(res);
+           })
+        },
+        comment_count:function(callback){
+            $.get(baseUrl+'/admin/comment_count',function(res){
+                callback(res);
+            })
+        },
+        month_article_count:function(callback){
+            $.get(baseUrl+'/admin/month_article_count',function(res){
+                callback(res);
+            })
+        },
 }

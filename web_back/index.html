@@ -72,7 +72,6 @@
         })
         admin.getuser(function (res) {
             if (res.code === 200) {
-                console.log(res);
                 $('#username').text(res.data.nickname)
                 $('.userimg').prop('src', res.data.user_pic)
             }
