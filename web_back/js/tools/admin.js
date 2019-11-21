@@ -33,8 +33,31 @@ var article = {
             })
         },
         month_article_count:function(callback){
-            $.get(baseUrl+'/admin/month_article_count',function(res){
+            $.get('http://localhost:8000/admin/month_article_count',function(res){
                 callback(res);
             })
         },
+        category_count:function(callback){
+            $.get(baseUrl+'/admin/article_category_count',function(res){
+                callback(res);
+            })
+        },
+        category_visit:function(callback){
+            $.post(baseUrl+'/admin/article_category_visit',function(res){
+                callback(res);
+            })
+        }
 }
+
+                // console.log(res);
+                // console.log(typeof(res.data));
+                // var resa = JSON.parse(res)
+                // var getstr = resa.data;
+                // console.log(res.data);
+                
+                // getstra = JSON.parse(getstr)
+                // getstr = getstr.split('[');
+                // getstr.shift();
+                // var getstra =(getstr[0]).split(']');
+                // getstra.pop();
+                // console.log(getstra);

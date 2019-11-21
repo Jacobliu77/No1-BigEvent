@@ -13,7 +13,6 @@
     <script src="js/jquery-1.12.4.min.js"></script>
     <script type="text/javascript" src="js/echarts.min.js"></script>
 </head>
-
 <body>
     <div class="container-fluid">
         <div class="row spannel_list">
@@ -70,7 +69,7 @@
         article.comment_count(function (res) {
             if (res.code === 200) {
 
-                
+
                 $('#all_comment_count').text(res.data.all_count);
                 $('#day_comment_count').text(res.data.day_count);
             }
@@ -79,23 +78,125 @@
     <script>
         var oChart = echarts.init(document.getElementById('curve_show'));
         var aList_all = [];
-        article.month_article_count(function(res){
-            if(res.code===200){
-                console.log(res);
-               res.data.forEach(function(item){
-                var newday = {
-                    'count': item.day_count,
-                    'date':  item.day
-                };
-                aList_all.push(newday);
-               });    
+        article.month_article_count(function (res) {
+            if (res.code === 200) {
+                console.log(res.data);
+
+                res.data.forEach(function (item, i) {
+                    // console.log(item.day_count,item.day)
+                    var newday = {
+                        'count': item.day_count,
+                        'date': item.day
+                    };
+                    aList_all.push(newday);
+                    // console.log(newday)
+                });
             }
+            console.log(aList_all);
+
+            let aCount = [];
+            let aDate = [];
+
+            for (var i = 0; i < aList_all.length; i++) {
+                aCount.push(aList_all[i].count);
+                aDate.push(aList_all[i].date);
+            }
+
+            var chartopt = {
+                title: {
+                    text: '月新增文章数',
+                    left: 'center',
+                    top: '10'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data: ['新增文章'],
+                    top: '40'
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        mark: {
+                            show: true
+                        },
+                        dataView: {
+                            show: true,
+                            readOnly: false
+                        },
+                        magicType: {
+                            show: true,
+                            type: ['line', 'bar']
+                        },
+                        restore: {
+                            show: true
+                        },
+                        saveAsImage: {
+                            show: true
+                        }
+                    }
+                },
+                calculable: true,
+                xAxis: [{
+                    name: '日',
+                    type: 'category',
+                    boundaryGap: false,
+                    data: aDate
+                }],
+                yAxis: [{
+                    name: '月新增文章数',
+                    type: 'value'
+                }],
+                series: [{
+                    name: '新增文章',
+                    type: 'line',
+                    smooth: true,
+                    itemStyle: {
+                        normal: {
+                            areaStyle: {
+                                type: 'default'
+                            },
+                            color: '#f80'
+                        },
+                        lineStyle: {
+                            color: '#f80'
+                        }
+                    },
+                    data: aCount
+                }],
+                areaStyle: {
+                    normal: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                            offset: 0,
+                            color: 'rgba(255,136,0,0.39)'
+                        }, {
+                            offset: .34,
+                            color: 'rgba(255,180,0,0.25)'
+                        }, {
+                            offset: 1,
+                            color: 'rgba(255,222,0,0.00)'
+                        }])
+
+                    }
+                },
+                grid: {
+                    show: true,
+                    x: 50,
+                    x2: 50,
+                    y: 80,
+                    height: 220
+                }
+            };
+
+            oChart.setOption(chartopt);
         })
-        console.log(aList_all);
+        // console.log(aList_all);
         // var aList_all = [{
         //         'count': 36,
         //         'date': '2019-04-13'
         //     },
+        //     {"count":232,"date":"2019-10-22"},
         //     {
         //         'count': 52,
         //         'date': '2019-04-14'
@@ -213,103 +314,7 @@
         //         'date': '2019-05-12'
         //     },
         // ];
-
-        let aCount = [];
-        let aDate = [];
-
-        for (var i = 0; i < aList_all.length; i++) {
-            aCount.push(aList_all[i].count);
-            aDate.push(aList_all[i].date);
-        }
-
-        var chartopt = {
-            title: {
-                text: '月新增文章数',
-                left: 'center',
-                top: '10'
-            },
-            tooltip: {
-                trigger: 'axis'
-            },
-            legend: {
-                data: ['新增文章'],
-                top: '40'
-            },
-            toolbox: {
-                show: true,
-                feature: {
-                    mark: {
-                        show: true
-                    },
-                    dataView: {
-                        show: true,
-                        readOnly: false
-                    },
-                    magicType: {
-                        show: true,
-                        type: ['line', 'bar']
-                    },
-                    restore: {
-                        show: true
-                    },
-                    saveAsImage: {
-                        show: true
-                    }
-                }
-            },
-            calculable: true,
-            xAxis: [{
-                name: '日',
-                type: 'category',
-                boundaryGap: false,
-                data: aDate
-            }],
-            yAxis: [{
-                name: '月新增文章数',
-                type: 'value'
-            }],
-            series: [{
-                name: '新增文章',
-                type: 'line',
-                smooth: true,
-                itemStyle: {
-                    normal: {
-                        areaStyle: {
-                            type: 'default'
-                        },
-                        color: '#f80'
-                    },
-                    lineStyle: {
-                        color: '#f80'
-                    }
-                },
-                data: aCount
-            }],
-            areaStyle: {
-                normal: {
-                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                        offset: 0,
-                        color: 'rgba(255,136,0,0.39)'
-                    }, {
-                        offset: .34,
-                        color: 'rgba(255,180,0,0.25)'
-                    }, {
-                        offset: 1,
-                        color: 'rgba(255,222,0,0.00)'
-                    }])
-
-                }
-            },
-            grid: {
-                show: true,
-                x: 50,
-                x2: 50,
-                y: 80,
-                height: 220
-            }
-        };
-
-        oChart.setOption(chartopt);
+        
 
 
         var oPie = echarts.init(document.getElementById('pie_show'));
