@@ -36,7 +36,12 @@ var article = {
             $.get(ApiUrls.article_month_count,function(res){
                 callback(res);
             })
-        }  
+        } ,
+        show:function(callback){
+            $.get(ApiUrls.article_show,function(res){
+                callback(res);
+            })
+        } 
 }
 
 

@@ -22,9 +22,9 @@ app.use(morgan('tiny'))
 // cors
 // app.use(cors());
 app.all('*', function (req, res, next) {
-  console.log(`${Date.now()}:来自${req.connection.remoteAddress} 访问了 ${req.method}-${req.url}。参数是：${req.query},携带cookie:${req.headers.cookie}`)
-  console.log('携带cookie:')
-  console.log(req.cookies)
+  console.log(`${Date.now()}:来自${req.connection.remoteAddress} 访问了 ${req.method}-${req.url}`)
+  // console.log('携带cookie:')
+  // console.log(req.cookies)
   res.header('Access-Control-Allow-Origin', req.headers.origin) // 需要显示设置来源
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
   res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS')
@@ -35,7 +35,7 @@ app.all('*', function (req, res, next) {
 // 托管静态资源
 app.use('/static', express.static('uploads'))
 // 是否使用 权限
-console.log(process.argv)
+// console.log(process.argv)
 
 if (process.argv[2] === 'token') {
   app.use('/admin', function (req, res, next) {
@@ -69,5 +69,7 @@ app.use('/admin', adminRouter)
 
 // 开启监听
 app.listen(8000, () => {
-  console.log('app已启动,端口为8000')
+  console.log('大事件项目后端服务器启动：')
+  console.log('端口为：8000')
+  console.log('http://localhost:8000')
 })

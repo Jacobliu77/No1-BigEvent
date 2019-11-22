@@ -33,7 +33,7 @@ module.exports = {
   addArticle ({ title, content, cover, type, date, state = '草稿' }) {
     const article = this.getArticle()
     article.push({
-      id: article.length,
+      id: Date.now(),
       title,
       content,
       cover,
@@ -42,8 +42,7 @@ module.exports = {
       comment: 0,
       date,
       author: '管理员',
-      state: state,
-      isDelete: false
+      state: state
     })
     try {
       fs.writeFileSync(path.join(basePath, 'article.json'), JSON.stringify(article))

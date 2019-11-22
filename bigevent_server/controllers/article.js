@@ -3,6 +3,7 @@ const article = require(path.join(__dirname, '../utils/article'))
 const category = require(path.join(__dirname, '../utils/category'))
 const config = require(path.join(__dirname, '../utils/config'))
 const moment = require('moment')
+const fs = require('fs')
 module.exports = {
   // 文章搜索
 
@@ -63,7 +64,7 @@ module.exports = {
       })
     if (id) {
       // 如果只是id
-      const editOne = article.filter(v => {
+      const editOne = articles.filter(v => {
         return v.id == id
       })[0]
 
@@ -93,8 +94,7 @@ module.exports = {
     const totalPage = Math.ceil(articles.length / perpage) || 1
     // 返回的数据
     var backData = []
-    console.log(startIndex)
-    console.log(endIndex)
+    console.log(`分页 起始索引${startIndex}  结束索引${endIndex}`)
     for (let i = startIndex; i < endIndex; i++) {
       backData.push(articles[i])
     }
@@ -149,7 +149,7 @@ module.exports = {
     cover = config.serverAddress + `/static/articles/${req.file.filename}`
     // 获取文章
     if (
-      db.addArticle({
+      article.addArticle({
         title,
         content,
         cover,
@@ -222,7 +222,7 @@ module.exports = {
     }
     // 设置封面
     // 修改文章
-    if (db.editArticle({ id, title, type, content, cover, date })) {
+    if (article.editArticle({ id, title, type, content, cover, date })) {
       res.send({
         msg: '修改成功',
         code: 200
