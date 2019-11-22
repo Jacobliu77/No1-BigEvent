@@ -1,7 +1,7 @@
-var baseUrl = 'http://localhost:8000'
+
 var admin = {
     login: function (myname, mypassword, callback) {
-        $.post(baseUrl + '/admin/login', {
+        $.post(ApiUrls.admin_login, {
             user_name: myname,
             password: mypassword
         }, function (res) {
@@ -9,12 +9,12 @@ var admin = {
         })
     },
     logout: function (callback) {
-        $.post(baseUrl + '/admin/logout', function (res) {
+        $.post(ApiUrls.admin_logout, function (res) {
             callback(res);
         })
     },
     getuser: function (callback) {
-        $.get(baseUrl + '/admin/getuser', function (res) {
+        $.get(ApiUrls.admin_getuser, function (res) {
             callback(res)
         })
     }
@@ -23,41 +23,53 @@ var admin = {
 
 var article = {
         count: function (callback) {
-           $.get(baseUrl+'/admin/article_count',function(res){
+           $.get(ApiUrls.article_count,function(res){
                 callback(res);
            })
         },
         comment_count:function(callback){
-            $.get(baseUrl+'/admin/comment_count',function(res){
+            $.get(ApiUrls.article_comment_count,function(res){
                 callback(res);
             })
         },
         month_article_count:function(callback){
-            $.get('http://localhost:8000/admin/month_article_count',function(res){
+            $.get(ApiUrls.article_month_count,function(res){
                 callback(res);
             })
-        },
-        category_count:function(callback){
-            $.get(baseUrl+'/admin/article_category_count',function(res){
-                callback(res);
-            })
-        },
-        category_visit:function(callback){
-            $.post(baseUrl+'/admin/article_category_visit',function(res){
-                callback(res);
-            })
-        }
+        }  
 }
 
-                // console.log(res);
-                // console.log(typeof(res.data));
-                // var resa = JSON.parse(res)
-                // var getstr = resa.data;
-                // console.log(res.data);
-                
-                // getstra = JSON.parse(getstr)
-                // getstr = getstr.split('[');
-                // getstr.shift();
-                // var getstra =(getstr[0]).split(']');
-                // getstra.pop();
-                // console.log(getstra);
+
+var category = {
+
+         count:function(callback){
+             $.get(ApiUrls.category_count,function(res){
+                 callback(res);
+             })
+         },
+         visit:function(callback){
+             $.post(ApiUrls.category_visit,function(res){
+                 callback(res);
+             })
+         },
+         search:function(callback){
+             $.get(ApiUrls.category_search,function(res){
+                 callback(res);
+             })
+         },
+         add:function(name,slug,callback){
+             $.post(ApiUrls.category_add,{name:name,slug:slug},function(res){
+                 callback(res);
+             })
+         },
+         edit:function(id,name,slug,callback){
+             $.post(ApiUrls.category_edit,{id:id,name:name,slug:slug},function(res){
+                 callback(res);
+             })
+         },
+         delete:function(id,callback){
+             $.post(ApiUrls.category_delete,{id:id},function(res){
+                 callback(res);
+             })
+         }
+}
