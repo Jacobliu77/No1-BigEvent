@@ -10,6 +10,7 @@ var ApiUrls = {
     article_comment_count: baseUrl+'/admin/comment_count',
     article_month_count: baseUrl+'/admin/month_article_count',
     article_show: baseUrl+'/admin/search',
+    article_del:baseUrl+'/admin/article_delete',
 
 
     category_count: baseUrl+'/admin/article_category_count',

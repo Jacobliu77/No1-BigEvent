@@ -37,11 +37,33 @@ var article = {
                 callback(res);
             })
         } ,
-        show:function(callback){
-            $.get(ApiUrls.article_show,function(res){
+        show:function(curPage, type, state,callback){
+            $.get(ApiUrls.article_show,
+                {
+                page: curPage,
+                type: type,
+                state: state
+                },
+            function(res){
                 callback(res);
             })
-        } 
+        },del: function(id,callback){
+            $.get(ApiUrls.article_del,{'id': id},function(res){
+                callback(res)
+            })
+        },
+        add: function(fd, callback){
+            $.ajax({
+                url: ApiUrls.article_add,
+                type: 'post',
+                data: fd,
+                processData: false, // 不要让jquery去处理formdata数据
+                contentType: false, // 不要使用默认的请求头
+                success:function(res){
+                    callback(res)
+                }
+            })
+        }
 }
 
 
@@ -76,5 +98,6 @@ var category = {
              $.post(ApiUrls.category_delete,{id:id},function(res){
                  callback(res);
              })
-         }
+         }, 
+         
 }
