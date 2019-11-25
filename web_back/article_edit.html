@@ -16,44 +16,44 @@
     <script src="js/tinymce/js/tinymce/tinymce.min.js"></script>
     <script src="js/tinymce/js/tinymce_setup.js"></script>
 </head>
+
 <body>
     <div class="container-fluid">
         <div class="common_title">
             文章编辑
         </div>
         <div class="container-fluid common_con">
-            <form class="form-horizontal article_form">
+            <form class="form-horizontal article_form" id="myform">
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章标题：</label>
                     <div class="col-sm-10">
-                        <input type="email" class="form-control" id="inputEmail3" value="文章标题文字">
+                        <input type="email" name="title" class="form-control" id="inputEmail3" value="文章标题文字">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputPassword3" class="col-sm-2 control-label">文章封面：</label>
                     <div class="col-sm-10">
-                        <img src="images/pic06.jpg" class="article_cover">
-                        <input type="file" id="exampleInputFile">
+                        <img id="previewImg" src="images/pic06.jpg" class="article_cover">
+                        <input type="file" name="cover" id="exampleInputFile">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章类别：</label>
                     <div class="col-sm-4">
-                        <select class="form-control">
-                            <option>类别一</option>
+                        <select class="form-control" id="cate_cont" name="type">
+                            <!-- <option>类别一</option>
                             <option>类别二</option>
                             <option>类别三</option>
                             <option selected>类别四</option>
-                            <option>类别五</option>
+                            <option>类别五</option> -->
                         </select>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">发布时间：</label>
                     <div class="col-sm-4">
-
                         <div class="input-group">
-                            <input type="text" class="form-control" value="2019-05-17" id="dateinput">
+                            <input type="text" class="form-control" value="2019-05-17" name="date" id="dateinput">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button"
                                     onclick="jeDate('#dateinput',{trigger:false,format: 'YYYY-MM-DD'})"><i
@@ -65,18 +65,105 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章内容：</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="rich_content" name="content" placeholder="文章内容" value="文章内容">
+                        <input type="text" class="form-control" id="rich_content" name="content" placeholder="文章内容"
+                            value="文章内容">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-success">修改</button>
+                        <button type="button" id="editbtn" class="btn btn-success">修改</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
-
+    <script src="./js/tools/config.js"></script>
+    <script src="./js/tools/admin.js"></script>
+    <script src="./js/template-web.js"></script>
+    <script type="text/html" id="temp_cate">
+        {{each data item}}
+        <option value="{{item.id}}">{{item.name}}</option>
+        {{/each}}
+    </script>
+    <script>
+        //文章类型分类
+        category.search(function (res) {
+            // console.log(res);
+            if (res.code === 200) {
+                var htmlStr = template('temp_cate', res);
+                // console.log(htmlStr);
+                $('#cate_cont').html(htmlStr);
+            }
+        })
+        // 1. 获取在地址栏中id 
+        // http://127.0.0.1:5500/web_back/article_edit.html?id=1574515438675
+        // location.search   ======> ?id=1574515438675
+        // alert( location.search )
+        // str.substr(起点下标，长度)。如果不写长度，则取从起点到结束的全部子串
+        var id = location.search.substr(1);
+        // 2. 根据 id去求接口，获取对应文章的详情
+        article.getDetail(id, function (res) {
+            // console.log(res);
+            // 当前文章所属的类别 id
+            var typeId = res.data.type;
+            // 3. 显示在表单元素中
+            $('#inputEmail3').val(res.data.title)
+            $('#previewImg').prop("src", res.data.cover)
+            $('#dateinput').val(res.data.date)
+            $('#rich_content').val(res.data.content)
+            $('#cate_cont').val(typeId)
+            //// 修改文章
+            // 收集表单信息
+            // var fd = new FormData( form dom节点)
+            $('#editbtn').click(function () {
+                var fd = new FormData(document.getElementById('myform'))
+                // console.log(fd);
+                // 手动添加一个参数
+                fd.append('id', id)
+                fd.set('state', '已发布')
+                // 如果要获取富文本编辑中的内容，
+                // 则需要调用它自己的api，而不能直接从textarea中取
+                // fd.set(key,value); 会覆盖fd中的key
+                fd.set('content', tinyMCE.activeEditor.getContent())
+                // 发请求，调用接口.
+                // 在article.js中准备一个添加文章的方法  
+                article.edit(fd, function (res) {
+                    // console.log(res);
+                    if (res.code === 201) {
+                        alert('修改成功')
+                    } else {
+                        alert(res.msg)
+                    }
+                })
+            });
+        })
+        // 显示文章类别
+        // 1. 发请求，拿数据
+        category.search(function (res) {
+            // console.log(res);
+            // 2. 模板引擎，显示数据
+            if (res.code === 200) {
+                var htmlStr = template('temp_cate', res);
+                // console.log(htmlStr);
+                $('#cate_con').html(htmlStr);
+            } else {
+                alert(res.msg);
+            }
+        })
+        //图片的预览显示
+        $('#exampleInputFile').change(function () {
+            // console.dir(this);
+            var file = this.files[0];
+            if (file) {
+                // 选中文件
+                // 生成一个临时的地址;
+                var url = URL.createObjectURL(file);
+                // console.log(url); 
+                // 把地址给 #previewImg
+                $('#previewImg').prop('src', url)
+            }
+        }) 
+    </script>
 </body>
 
 </html>

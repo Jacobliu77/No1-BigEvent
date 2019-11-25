@@ -33,7 +33,7 @@
                             <option value="草稿">草稿</option>
                             <option value="已发布">已发布</option>
                         </select>
-                        <button id="btnSearch" class="btn btn-default btn-sm">筛选</button>
+                        <button id="btnSearch" type="button" class="btn btn-default btn-sm">筛选</button>
                     </form>
                 </div>
                 <div class="col-xs-6">
@@ -86,7 +86,7 @@
             <td class="text-center">{{item.date}}</td>
             <td class="text-center">{{item.state}}</td>
             <td class="text-center">
-                <a href="article_edit.html" class="btn btn-default btn-xs edit">编辑</a>
+                <a href="article_edit.html?{{item.id}}"  class="btn btn-default btn-xs edit">编辑</a>
                 <a href="javascript:;" data-id="{{item.id}}" class="btn btn-danger btn-xs del">删除</a>
             </td>
         </tr>
@@ -105,7 +105,7 @@
             // 模板引擎，渲染数据
             var htmlStr = template('temp_cate', res);
             // console.log(htmlStr);
-            $('#selCategory').html(htmlStr)
+            $('#selCategory').html(htmlStr);
         })
     </script>
     <script>
@@ -119,7 +119,7 @@
         function getAndShow() {
             article.show(curPage, type, state, function (res) {
                 // 取回数据
-                // console.log(res);
+                console.log(res);
                 if (res.code === 200) {
                     // 1. 使用模板引擎技术，渲染数据
                     var htmlStr = template('temp_table', res)
@@ -143,8 +143,8 @@
                         onPageClick: function (event, page) {
                             // 点击页码：
                             // 1. 更新全局变量
-                            // console.log(event,page);
-                            curPage = page
+                            console.log(event,page);
+                            curPage = page;
                             // 2. 重新请求
                             getAndShow()
                         }
@@ -181,6 +181,7 @@
                 }
             })
         })
+
     </script>
 </body>
 

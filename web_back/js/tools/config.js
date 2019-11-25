@@ -11,6 +11,9 @@ var ApiUrls = {
     article_month_count: baseUrl+'/admin/month_article_count',
     article_show: baseUrl+'/admin/search',
     article_del:baseUrl+'/admin/article_delete',
+    article_add:baseUrl+'/admin/article_publish',
+    article_edit:baseUrl+'/admin/article_edit',
+    
 
 
     category_count: baseUrl+'/admin/article_category_count',

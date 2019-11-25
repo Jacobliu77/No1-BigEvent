@@ -23,37 +23,36 @@
             写文章
         </div>
         <div class="container-fluid common_con">
-            <form class="form-horizontal article_form">
+            <form class="form-horizontal article_form" id="myform">
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章标题：</label>
                     <div class="col-sm-10">
-                        <input type="email" class="form-control" id="inputEmail3" placeholder="文章标题">
+                        <input type="email" name="title" class="form-control" id="inputEmail3" placeholder="文章标题">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputPassword3" class="col-sm-2 control-label">文章封面：</label>
                     <div class="col-sm-10">
-                        <input type="file" id="exampleInputFile">
+                        <input type="file" name="cover" id="coverImg">
+                    </div>
+                    <div>
+                        <img id="previewImg" style="height:200px;" src="./images/2.jpg" alt="">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章类别：</label>
                     <div class="col-sm-4">
-                        <select class="form-control">
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
+                        <select class="form-control" name="type" id="cate_con">
+
                         </select>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">发布时间：</label>
-                    <div class="col-sm-4">
+                    <div class="col-sm-4" >
 
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="YYYY-MM-DD" id="dateinput">
+                            <input type="text" name="date" class="form-control" placeholder="YYYY-MM-DD" id="dateinput">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button"
                                     onclick="jeDate('#dateinput',{trigger:false,format: 'YYYY-MM-DD'})"><i
@@ -65,21 +64,105 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章内容：</label>
                     <div class="col-sm-10">
-                        <textarea class="form-control" id="rich_content" name="content" placeholder="文章内容">
+                        <textarea class="form-control" name="content" id="rich_content" name="content" placeholder="文章内容">
                             Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda fugiat illo nihil molestias ab. Laborum eius non atque, totam sapiente quae obcaecati assumenda ratione inventore pariatur maiores, qui libero delectus.
                             </textarea>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-success">发布</button>
-                        <button type="submit" class="btn btn-default">存为草稿</button>
+                        <button type="button" id="addbtn" class="btn btn-success">发布</button>
+                        <button type="button" id="draftbtn" class="btn btn-default">存为草稿</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
+    <script src="./js/tools/config.js"></script>
+    <script src="./js/tools/admin.js"></script>
+    <script src="./js/template-web.js"></script>
+    <script type="text/html" id="temp_cate">
+        {{each data item}}
+        <option value="{{item.id}}">{{item.name}}</option>
+        {{/each}}
+    </script>
+    <script>
+        // 显示文章类别
+        // 1. 发请求，拿数据
+        category.search(function (res) {
+            // console.log(res);
+            // 2. 模板引擎，显示数据
+            if (res.code === 200) {
+                var htmlStr = template('temp_cate', res);
+                // console.log(htmlStr);
+                $('#cate_con').html(htmlStr);
+            } else {
+                alert(res.msg);
+            }
+        })
 
+
+        //图片的预览显示
+        $('#coverImg').change(function () {
+            // console.dir(this);
+            var file = this.files[0];
+            if (file) {
+                // 选中文件
+                // 生成一个临时的地址;
+                var url = URL.createObjectURL(file);
+                // console.log(url); 
+                // 把地址给 #previewImg
+                $('#previewImg').prop('src', url)
+            }
+        })
+
+        //// 发布文章
+        // 收集表单信息
+        // var fd = new FormData( form dom节点)
+        $('#addbtn').click(function () {
+            var fd = new FormData(document.getElementById('myform'))
+            console.log(fd);
+            // 手动添加一个参数
+            fd.append('state', '已发布')
+
+            // 如果要获取富文本编辑中的内容，
+            // 则需要调用它自己的api，而不能直接从textarea中取
+            // fd.set(key,value); 会覆盖fd中的key
+            fd.set('content', tinyMCE.activeEditor.getContent())
+
+            // 发请求，调用接口.
+            // 在article.js中准备一个添加文章的方法  
+            article.add(fd,function(res){
+                console.log(res);
+                if(res.code === 201){
+                    alert('添加成功')
+                } else {
+                    alert(res.msg)
+                } 
+            })
+        });
+        //草稿
+        $('#draftbtn').click(function () {
+            var fd = new FormData(document.getElementById('myform'))
+            console.log(fd);
+            // 手动添加一个参数
+            fd.append('state', '草稿')
+            // 如果要获取富文本编辑中的内容，
+            // 则需要调用它自己的api，而不能直接从textarea中取
+            // fd.set(key,value); 会覆盖fd中的key
+            fd.set('content', tinyMCE.activeEditor.getContent())
+            // 发请求，调用接口.
+            // 在article.js中准备一个添加文章的方法  
+            article.add_dra(fd,function(res){
+                console.log(res);
+                if(res.code === 201){
+                    alert('添加成功')
+                } else {
+                    alert(res.msg)
+                } 
+            })
+        })
+    </script>
 </body>
 
 </html>
