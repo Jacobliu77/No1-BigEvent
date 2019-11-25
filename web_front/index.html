@@ -28,23 +28,23 @@
         <div class="menu">
             <div class="menu_collapse fl">
                 <a href="javascript:;" class="level_one"><i class="fa fa-list-ul"></i>全部分类</a>
-                <ul class="level_two">
-                    <li class="up"></li>
+                <ul class="level_two" id="list_con1">
+                    <!-- <li class="up"></li>
                     <li><a href="#">最 新</a></li>
                     <li><a href="#">科 技</a></li>
                     <li><a href="#">股 市</a></li>
                     <li><a href="#">商 品</a></li>
                     <li><a href="#">外 汇</a></li>
-                    <li><a href="#">公 司</a></li>
+                    <li><a href="#">公 司</a></li> -->
                 </ul>
             </div>
-            <ul class="left_menu fl">
-                <li><a href="#">最 新</a></li>
+            <ul class="left_menu fl" id="list_con2">
+                <!-- <li><a href="#">最 新</a></li>
                 <li><a href="#">科 技</a></li>
                 <li><a href="#">股 市</a></li>
                 <li><a href="#">商 品</a></li>
                 <li><a href="#">外 汇</a></li>
-                <li><a href="#">公 司</a></li>
+                <li><a href="#">公 司</a></li> -->
             </ul>
             <ul class="right_menu fr">
                 <li><a href="#">科技专题</a></li>
@@ -55,27 +55,16 @@
 
     <div class="main_con clearfix">
         <div class="left_con">
-            <ul class="focus_list">
-                <li class="first">
+            <ul class="focus_list" id="focus">
+                <!-- <li class="first">
                     <a href="#"><img src="images/pic01.jpg" alt=""></a>
                     <p>图片说明</p>
                 </li>
                 <li>
                     <a href="#"><img src="images/pic02.jpg" alt=""></a>
                     <p>图片说明图片说明图片说明图片说明图片说明图片说明图片说明图片说明图片说明</p>
-                </li>
-                <li>
-                    <a href="#"><img src="images/pic03.jpg" alt=""></a>
-                    <p>图片说明</p>
-                </li>
-                <li>
-                    <a href="#"><img src="images/pic05.jpg" alt=""></a>
-                    <p>图片说明</p>
-                </li>
-                <li>
-                    <a href="#"><img src="images/pic06.jpg" alt=""></a>
-                    <p>图片说明</p>
-                </li>
+                </li> -->
+               
             </ul>
 
             <div class="common_title">
@@ -215,12 +204,67 @@
             <span>|</span>
             <a href="#">招聘人才</a>
             <span>|</span>
-            <a href="#">友情链接</a>		
+            <a href="#">友情链接</a>
         </div>
-        <p>CopyRight © 2019 深圳大事件信息技术股份有限公司   All Rights Reserved</p>
-        <p>电话：0755-****888    粤ICP备*******8号</p>
+        <p>CopyRight © 2019 深圳大事件信息技术股份有限公司 All Rights Reserved</p>
+        <p>电话：0755-****888 粤ICP备*******8号</p>
     </div>
 
+    <script src="./js/jquery-1.12.4.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/template-web.js"></script>
+    <script src="./js/utils/config.js"></script>
+    <script src="./js/utils/user.js"></script>
+    <!-- 垂直类型列表模板 -->
+    <script id="temp_list1" type="text/html">
+        {{each data item ide}} 
+        {{if ide == 0 }}
+        <li class="up"><a href="#">{{item.name}}</a></li>
+        {{else}}
+        <li><a href="#">{{item.name}}</a></li>
+        {{/if}}
+        {{/each}}
+    </script>
+    <!-- 水平类型列表模板 -->
+    <script id="temp_list2" type="text/html">
+        {{each data item ide}}
+        <li><a href="#">{{item.name}}</a></li>
+        {{/each}}
+    </script>
+    <!-- 五个热点聚焦模板 -->
+    <script id="temp_fiveFocus" type="text/html">
+        {{each data item ide}}
+        {{if ide == 0 }}
+        <li class="first">
+            <a href="article.html?_id={{item.id}}"><img src={{item.cover}} alt={{item.title}}></a>
+            <p>{{item.title}}</p>
+        </li>
+        {{else}}
+        <li>
+            <a href="article.html?_id={{item.id}}"><img src={{item.cover}} alt={{item.title}}></a>
+            <p>{{item.title}}</p>
+        </li>
+        {{/if}}
+        {{/each}}
+    </script>
+    <script>
+        //文章类型获取与展示
+        category.show(function (res) {
+            // console.log(res);
+            var htmlStra = template('temp_list1', res);
+            var htmlStrb = template('temp_list2', res);
+            // console.log(htmlStra,htmlStrb);
+            $('#list_con1').html(htmlStra);
+            $('#list_con2').html(htmlStrb);
+        })
+
+        article.getFiveFocus(function (res) {
+            // console.log(res);
+            var htmlStrc = template('temp_fiveFocus', res);
+            // console.log(htmlStrc);
+            $('#focus').html(htmlStrc);
+        })
+    </script>
 </body>
 
 </html>

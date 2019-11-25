@@ -28,7 +28,7 @@
         <div class="menu">
             <div class="menu_collapse fl">
                 <a href="javascript:;" class="level_one"><i class="fa fa-list-ul"></i>全部分类</a>
-                <ul class="level_two">
+                <ul class="level_two" id="list_con1">
                     <li class="up"></li>
                     <li><a href="#">最 新</a></li>
                     <li><a href="#">科 技</a></li>
@@ -38,7 +38,7 @@
                     <li><a href="#">公 司</a></li>
                 </ul>
             </div>
-            <ul class="left_menu fl">
+            <ul class="left_menu fl" id="list_con2">
                 <li><a href="#">最 新</a></li>
                 <li><a href="#">科 技</a></li>
                 <li><a href="#">股 市</a></li>
@@ -58,10 +58,11 @@
             <div class="breadcrumb">
                 当前位置： <a href="#">首页</a> &gt; <a href="#">科技</a> &gt; 文章详情
             </div>
-            <h3 class="article_title">马斯克的新花样？连接人脑和电脑的初创公司又筹了一笔钱</h3>
-            <div class="article_info">杰克 发布于 2019-05-08 07:08:46&nbsp;&nbsp;&nbsp;分类: 奇趣事&nbsp;&nbsp;&nbsp;阅读:
-                (98)&nbsp;&nbsp;&nbsp;评论: (0)</div>
-            <div class="article_con">
+            <h3 class="article_title" id="title">马斯克的新花样？连接人脑和电脑的初创公司又筹了一笔钱</h3>
+            <div class="article_info"><span id="author"> </span> 发布于 <span id="date"> 2019-05-08
+                    07:08:46</span>&nbsp;&nbsp;&nbsp;分类: <span id="typename">奇趣事</span> &nbsp;&nbsp;&nbsp;阅读:
+                ( <span id="readcount"></span> )&nbsp;&nbsp;&nbsp;评论: ( <span id="commentCount"></span> )</div>
+            <div class="article_con" id="content">
 
                 <p>“上天入地”还不够？硅谷“钢铁侠”马斯克名下一家低调的公司最近又融了一大笔钱。</p>
 
@@ -204,7 +205,69 @@
         <p>CopyRight © 2019 深圳大事件信息技术股份有限公司 All Rights Reserved</p>
         <p>电话：0755-****888 粤ICP备*******8号</p>
     </div>
+    <script src="./js/jquery-1.12.4.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/template-web.js"></script>
+    <script src="./js/utils/config.js"></script>
+    <script src="./js/utils/user.js"></script>
+    <!-- 垂直类型列表模板 -->
+    <script id="temp_list1" type="text/html">
+        {{each data item ide}}
+        {{if ide == 0 }}
+        <li class="up"><a href="#">{{item.name}}</a></li>
+        {{else}}
+        <li><a href="#">{{item.name}}</a></li>
+        {{/if}}
+        {{/each}}
+    </script>
+    <!-- 水平类型列表模板 -->
+    <script id="temp_list2" type="text/html">
+        {{each data item ide}}
+        <li><a href="#">{{item.name}}</a></li>
+        {{/each}}
+    </script>
+    <script>
+        //文章类型获取与展示
+        category.show(function (res) {
+            // console.log(res);
+            var htmlStra = template('temp_list1', res);
+            var htmlStrb = template('temp_list2', res);
+            // console.log(htmlStra,htmlStrb);
+            $('#list_con1').html(htmlStra);
+            $('#list_con2').html(htmlStrb);
+        }) 
+        //文章内容渲染
+        // 1. 获取在地址栏中id 
+        var article_id = location.search.substr(5);
+        // console.log(article_id); 
+        article.getDetail(article_id, function (res) {
+            // console.log(res);
+            var typeId = res.data.type;
+            //寻找文章类型对应的类型名
+            category.show(function (result) {
+                var rs = result.data.find(function (item) {
+                    if (item.id == typeId) {
+                        return true;
+                    }
+                })
+                if (rs) {
+                    $('#typename').text(rs.name)
+                }
+            })
+            $('#title').text(res.data.title);
+            $('#author').text(res.data.author);
+            $('#date').text(res.data.date);
+            $('#commentCount').text("commentCount");
+            $('#readcount').text("readcount");
+            $('#content').html(res.data.content);
+        })
+        
+        // comment.add(){
 
+        // }
+
+        
+    </script>
 </body>
 
 </html>

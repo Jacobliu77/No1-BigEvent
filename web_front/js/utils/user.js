@@ -7,7 +7,7 @@ var category = {
     }
 }
 var article = {
-    
+
     getFiveFocus: function(callback){
         $.get(APIURLS.article_show,
             {
