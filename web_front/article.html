@@ -84,49 +84,29 @@
             <form action="" class="comment_form">
                 <div class="form_group">
                     <label>用户名：</label>
-                    <input type="text" placeholder="请输入用户名" class="comment_name">
+                    <input type="text" id="username" placeholder="请输入用户名" class="comment_name">
                 </div>
                 <div class="form_group">
                     <label>评论内容：</label>
-                    <textarea placeholder="请发表您的评论" class="comment_input"></textarea>
+                    <textarea placeholder="请发表您的评论" id="usercontent" class="comment_input"></textarea>
                 </div>
                 <div class="form_group">
-                    <input type="submit" name="" value="评 论" class="comment_sub"></div>
+                    <input type="button" name="" id="subbtn" value="评 论" class="comment_sub"></div>
             </form>
 
-            <div class="comment_count">
-                4条评论
+            <div class="comment_count" >
+               <span id="comment_count">4</span> 条评论
             </div>
 
-            <div class="comment_list_con">
-                <div class="comment_detail_list">
+            <div class="comment_list_con" id="comment_list_down">
+                <!-- <div class="comment_detail_list">
                     <div class="person_pic fl">乔</div>
                     <div class="name_time fl"><b>虚竹</b><span>4小时前</span></div>
                     <div class="comment_text fl">
                         遏制茅台酒价格过快上涨，多渠道供给，就不一定要买，租茅台酒也可以的，租售同权。开发共有产权茅台酒，让老百姓喝得起茅台酒，饮者有其酒。
                     </div>
-                </div>
-                <div class="comment_detail_list">
-                    <div class="person_pic fl">段</div>
-                    <div class="name_time fl"><b>虚竹</b><span>4小时前</span></div>
-                    <div class="comment_text fl">
-                        遏制茅台酒价格过快上涨，多渠道供给，就不一定要买，租茅台酒也可以的，租售同权。开发共有产权茅台酒，让老百姓喝得起茅台酒，饮者有其酒。
-                    </div>
-                </div>
-                <div class="comment_detail_list">
-                    <div class="person_pic fl">虚</div>
-                    <div class="name_time fl"><b>虚竹</b><span>4小时前</span></div>
-                    <div class="comment_text fl">
-                        遏制茅台酒价格过快上涨，多渠道供给，就不一定要买，租茅台酒也可以的，租售同权。开发共有产权茅台酒，让老百姓喝得起茅台酒，饮者有其酒。
-                    </div>
-                </div>
-                <div class="comment_detail_list">
-                    <div class="person_pic fl">王</div>
-                    <div class="name_time fl"><b>虚竹</b><span>4小时前</span></div>
-                    <div class="comment_text fl">
-                        遏制茅台酒价格过快上涨，多渠道供给，就不一定要买，租茅台酒也可以的，租售同权。开发共有产权茅台酒，让老百姓喝得起茅台酒，饮者有其酒。
-                    </div>
-                </div>
+                </div> -->
+
             </div>
         </div>
         <div class="right_con setfl">
@@ -210,6 +190,19 @@
     <script src="./js/template-web.js"></script>
     <script src="./js/utils/config.js"></script>
     <script src="./js/utils/user.js"></script>
+    <script src="./js/dayjs/dayjs.min.js"></script>
+    <script src="./js/dayjs/relative.min.js"></script>
+    <script src="./js/dayjs/zh_cn.js"></script>
+
+    <script>
+        // dayjs使用插件
+        // 因为你引入了 “relative.min.js”，
+        // 所以就有了 dayjs_plugin_relativeTime
+        dayjs.extend(dayjs_plugin_relativeTime)
+        // dayjs设置语言
+        dayjs.locale('zh-cn')
+    </script>
+
     <!-- 垂直类型列表模板 -->
     <script id="temp_list1" type="text/html">
         {{each data item ide}}
@@ -220,10 +213,24 @@
         {{/if}}
         {{/each}}
     </script>
+
     <!-- 水平类型列表模板 -->
     <script id="temp_list2" type="text/html">
         {{each data item ide}}
         <li><a href="#">{{item.name}}</a></li>
+        {{/each}}
+    </script>
+
+    <!-- 底部留言显示 -->
+    <script id="temp_comm" type="text/html">
+        {{each data item}}
+        <div class="comment_detail_list">
+            <div class="person_pic fl">{{(item.name).substr(0,1)}}</div>
+            <div class="name_time fl"><b>{{item.name}}</b><span>{{item.relativeDt}}</span></div>
+            <div class="comment_text fl">
+                {{item.content}}
+            </div>
+        </div>
         {{/each}}
     </script>
     <script>
@@ -235,7 +242,7 @@
             // console.log(htmlStra,htmlStrb);
             $('#list_con1').html(htmlStra);
             $('#list_con2').html(htmlStrb);
-        }) 
+        })
         //文章内容渲染
         // 1. 获取在地址栏中id 
         var article_id = location.search.substr(5);
@@ -261,12 +268,50 @@
             $('#readcount').text("readcount");
             $('#content').html(res.data.content);
         })
-        
-        // comment.add(){
 
-        // }
+        //文章评论添加
+        $('#subbtn').click(function () {
+            let content = $('#usercontent').val()
+            let username = $('#username').val()
+            if (content == "" || username == "") {
+                alert('所填项不能为空')
+                return;
+            }
+            comment.add(username, content, article_id, function (res) {
+                // console.log(res);
+                if (res.code === 200) {
+                    alert(res.msg)
+                    $('#usercontent').val('')
+                    $('#username').val('')
+                    getAndshowComm()
+                } else {
+                    alert(res.msg)
+                }
+            })
+        })
 
-        
+
+        getAndshowComm();
+        //文章评论功能的更新；
+
+        function getAndshowComm() {
+            comment.get(article_id, function (res) {
+                if (res.code === 200) {
+                    res.data = res.data.reverse()
+                    res.data.forEach(function (item) {
+                        item.relativeDt = dayjs(item.dt).toNow()
+                    })
+                    // console.log(res.data);
+                    // var lengtha = res.data.length;
+                    // console.log(lengtha);
+                    var htmlStrd = template('temp_comm', res);
+                    $('#comment_list_down').html(htmlStrd)
+                    $('#comment_count').html(res.data.length)
+                } else {
+                    alert(res.msg)
+                }
+            })
+        }
     </script>
 </body>
 
