@@ -103,17 +103,17 @@
         category.search(function (res) {
             // console.log(res);
             // 模板引擎，渲染数据
-            var htmlStr = template('temp_cate', res);
+            let htmlStr = template('temp_cate', res);
             // console.log(htmlStr);
             $('#selCategory').html(htmlStr);
         })
     </script>
     <script>
         // 全局变量 用来表明筛选项和筛选条件
-        var curPage = ''; // 表示当前要展示第几页
-        var type = ''; // 表示文章的类型
-        var state = ''; // 表示文章的状态
-        var curTotalPage = ''; // 表示当前查询总页数
+        let curPage = ''; // 表示当前要展示第几页
+        let type = ''; // 表示文章的类型
+        let state = ''; // 表示文章的状态
+        let curTotalPage = ''; // 表示当前查询总页数
         getAndShow();
         // 获取数据，并展示在表格中
         function getAndShow() {
@@ -122,7 +122,7 @@
                 console.log(res);
                 if (res.code === 200) {
                     // 1. 使用模板引擎技术，渲染数据
-                    var htmlStr = template('temp_table', res)
+                    let htmlStr = template('temp_table', res)
                     $('#articleContainer').html(htmlStr)
                     // 2. 实现分页
                     // 如果前后两次查询结果得到的总页数不相同。
@@ -171,7 +171,7 @@
                 return;
             }
             // 从dom中取出自定义 属性
-            var id = $(this).attr('data-id')
+            let id = $(this).attr('data-id')
             // 去调用 article.js中的方法，去做删除
             // console.log(id);
             article.del(id, function (res) {

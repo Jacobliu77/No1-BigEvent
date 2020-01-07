@@ -100,7 +100,7 @@
         // location.search   ======> ?id=1574515438675
         // alert( location.search )
         // str.substr(起点下标，长度)。如果不写长度，则取从起点到结束的全部子串
-        var id = location.search.substr(1);
+        const id = location.search.substr(1);
         // 2. 根据 id去求接口，获取对应文章的详情
         article.getDetail(id, function (res) {
             // console.log(res);
@@ -116,7 +116,7 @@
             // 收集表单信息
             // var fd = new FormData( form dom节点)
             $('#editbtn').click(function () {
-                var fd = new FormData(document.getElementById('myform'))
+                let fd = new FormData(document.getElementById('myform'))
                 // console.log(fd);
                 // 手动添加一个参数
                 fd.append('id', id)
@@ -153,7 +153,7 @@
         //图片的预览显示
         $('#exampleInputFile').change(function () {
             // console.dir(this);
-            var file = this.files[0];
+            let file = this.files[0];
             if (file) {
                 // 选中文件
                 // 生成一个临时的地址;
@@ -163,6 +163,7 @@
                 $('#previewImg').prop('src', url)
             }
         }) 
+    
     </script>
 </body>
 

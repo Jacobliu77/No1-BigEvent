@@ -1,6 +1,6 @@
-var baseUrl = 'http://localhost:8000';
+const baseUrl = 'http://localhost:8000';
 
-var ApiUrls = {
+let ApiUrls = {
     admin_login: baseUrl+'/admin/login',
     admin_logout: baseUrl+'/admin/logout',
     admin_getuser: baseUrl+'/admin/getuser',
@@ -22,7 +22,4 @@ var ApiUrls = {
     category_add: baseUrl+'/admin/category_add' ,
     category_edit: baseUrl+'/admin/category_edit' ,
     category_delete: baseUrl+'/admin/category_delete' ,
-
-
-    
 }

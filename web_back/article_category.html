@@ -149,12 +149,12 @@
         {{/each}}
     </script>
     <script>
-        var getAndShow = function () {
+        let getAndShow = function () {
             category.search(function (res) {
                 if (res.code === 200) {
                     //渲染数据
                     // console.log(res);  
-                    var htmlStr = template("temp", res)
+                    let htmlStr = template("temp", res)
                     // console.log(htmlStr);
                     $('#tbody').html(htmlStr);
 
@@ -177,8 +177,8 @@
             $('#edit-model_sub').click(function () {
                 // 获取用户填入的信息
                 // var id = $('#edit-data-id').val().trim()
-                var name = $('#edit-recipient-name').val().trim()
-                var slug = $('#edit-message-text').val().trim()
+                let name = $('#edit-recipient-name').val().trim()
+                let slug = $('#edit-message-text').val().trim()
                 // 简单判断是否为空
                 if (name === '' || slug === '') {
                     alert('不能为空')
@@ -204,7 +204,7 @@
 
         //删除项目
         $('#tbody').on('click', '.del', function () {
-            var id = $(this).attr('data-id')
+            let id = $(this).attr('data-id')
             if (confirm('确定要删除嘛？？')) {
                 category.delete(id, function (res) {
                     if (res.code === 200) {
@@ -231,8 +231,8 @@
             $('#addModal').modal('show')
 
             $('#add_model_add').click(function () {
-                var name = $('#add-recipient-name').val().trim()
-                var slug = $('#add-message-text').val().trim()       
+                let name = $('#add-recipient-name').val().trim()
+                let slug = $('#add-message-text').val().trim()       
                 // 简单判断是否为空
                 if (name === '' || slug === '') {
                     alert('不能为空')
